@@ -29,10 +29,12 @@ function os_info() {
         arcolinux)        INFO="Arco Linux|-|https://arcolinux.com/|Is all about becoming an expert in linux.";;
         artixlinux)       INFO="Artix Linux|-|https://artixlinux.org/|The Art of Linux. Simple. Fast. Systemd-free.";;
         athenaos)         INFO="Athena OS|-|https://athenaos.org/|Offer a different experience than the most used pentesting distributions by providing only tools that fit with the user needs and improving the access to hacking resources and learning materials.";;
+        aurora)           INFO="Aurora|-|https://getaurora.dev/|Enjoy a privacy-respecting, smooth and stable experience on your PC. Imagine that. Play hard, work hard.";;
         batocera)         INFO="Batocera|-|https://batocera.org/|Retro-gaming distribution with the aim of turning any computer/nano computer into a gaming console during a game or permanently.";;
         bazzite)          INFO="Bazzite|-|https://github.com/ublue-os/bazzite/|Container native gaming and a ready-to-game SteamOS like.";;
         biglinux)         INFO="BigLinux|-|https://www.biglinux.com.br/|Is the right choice if you want to have an easy and enriching experience with Linux. It has been perfected over more than 19 years, following our motto: 'In search of the perfect system'.";;
         blendos)          INFO="BlendOS|-|https://blendos.co/|A seamless blend of all Linux distributions. Allows you to have an immutable, atomic and declarative Arch Linux system, with application support from several Linux distributions & Android.";;
+        bluefin)          INFO="Bluefin|-|https://projectbluefin.io/|The next generation Linux workstation, designed for reliability, performance, and sustainability.";;
         bodhi)            INFO="Bodhi|-|https://www.bodhilinux.com/|Lightweight distribution featuring the fast & fully customizable Moksha Desktop.";;
         bunsenlabs)       INFO="BunsenLabs|-|https://www.bunsenlabs.org/|Light-weight and easily customizable Openbox desktop. The project is a community continuation of CrunchBang Linux.";;
         cachyos)          INFO="CachyOS|-|https://cachyos.org/|Designed to deliver lightning-fast speeds and stability, ensuring a smooth and enjoyable computing experience every time you use it.";;
@@ -423,10 +425,12 @@ function os_support() {
     arcolinux \
     artixlinux \
     athenaos \
+    aurora \
     batocera \
     bazzite \
     biglinux \
     blendos \
+    bluefin \
     bodhi \
     bunsenlabs \
     cachyos \
@@ -583,6 +587,14 @@ function releases_athenaos() {
     echo $(web_pipe "https://api.github.com/repos/Athena-OS/athena/releases" | grep 'download_url' | grep rolling | cut -d'/' -f8 | sort -u)
 }
 
+function editions_aurora() {
+    echo stable
+}
+
+function releases_aurora() {
+    echo latest
+}
+
 function releases_batocera() {
     #shellcheck disable=SC2046,SC2005
     echo $(web_pipe "https://mirrors.o2switch.fr/batocera/x86_64/stable/" | grep ^\<a | cut -d'"' -f2 | cut -d '/' -f1 | grep -v '\.' | sort -ru | tail -n +2 | head -n 5)
@@ -608,6 +620,14 @@ function editions_biglinux() {
 
 function releases_blendos() {
     # there is now just a single latest iso
+    echo latest
+}
+
+function editions_bluefin() {
+    echo stable gts lts
+}
+
+function releases_bluefin() {
     echo latest
 }
 
@@ -1458,7 +1478,7 @@ EOF
                 echo "disk_size=\"32G\"" >> "${CONF_FILE}";;
             batocera)
                 echo "disk_size=\"8G\"" >> "${CONF_FILE}";;
-            bazzite)
+            aurora|bazzite|bluefin)
                 echo "disk_size=\"64G\"" >> "${CONF_FILE}";;
             dragonflybsd|haiku|openbsd|netbsd|slackware|slax|tails|tinycore)
                 echo "boot=\"legacy\"" >> "${CONF_FILE}";;
@@ -1661,6 +1681,13 @@ function get_athenaos() {
     echo "${URL}/${ISO} ${HASH}"
 }
 
+function get_aurora() {
+    local ISO="aurora-${EDITION}-x86_64.iso"
+    local URL="https://dl.getaurora.dev"
+    local HASH=$(web_pipe "${URL}/${ISO}-CHECKSUM" | cut -d' ' -f 1)
+    echo "${URL}/${ISO} ${HASH}"
+}
+
 function get_batocera() {
     local HASH=""
     local ISO=""
@@ -1695,6 +1722,13 @@ function get_blendos() {
     local HASH=""
     local ISO="blendOS.iso"
     local URL="https://kc1.mirrors.199693.xyz/blend/isos/testing"
+    echo "${URL}/${ISO} ${HASH}"
+}
+
+function get_bluefin() {
+    local ISO="bluefin-${EDITION}-x86_64.iso"
+    local URL="https://download.projectbluefin.io"
+    local HASH=$(web_pipe "${URL}/${ISO}-CHECKSUM" | cut -d' ' -f 1)
     echo "${URL}/${ISO} ${HASH}"
 }
 
